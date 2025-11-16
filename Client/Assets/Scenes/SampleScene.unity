@@ -179,7 +179,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 70
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -205,13 +205,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.70710707, y: -0, z: -0, w: 0.70710653}
+  m_LocalRotation: {x: 0.5735764, y: 0, z: 0, w: 0.8191521}
   m_LocalPosition: {x: 0, y: 10, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 70, y: 0, z: 0}
 --- !u!114 &330585547
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -689,10 +689,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _colyseusSettings: {fileID: 11400000, guid: d6de015bcd023e245a3d894a7d33de9d, type: 2}
-  _playerAimPrefab: {fileID: 1193988510941480585, guid: 4077b338d47779942b43d825ec5ae338, type: 3}
+  _cameraManager: {fileID: 2045209217}
   _snakePrefab: {fileID: 6465175757266603461, guid: c07cfae07d5a72245a3fb863a7a0007f, type: 3}
-  playerControllerPrefab: {fileID: 6682390961041265548, guid: 1a28dca6492876d4fa3488e71984ea22, type: 3}
---- !u!1 &1939714913
+  _playerControllerPrefab: {fileID: 6682390961041265548, guid: 1a28dca6492876d4fa3488e71984ea22, type: 3}
+  _playerAimPrefab: {fileID: 1193988510941480585, guid: 4077b338d47779942b43d825ec5ae338, type: 3}
+--- !u!1 &2045209216
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -700,42 +701,37 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1939714915}
-  - component: {fileID: 1939714914}
+  - component: {fileID: 2045209218}
+  - component: {fileID: 2045209217}
   m_Layer: 0
-  m_Name: Test
+  m_Name: CameraManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1939714914
+--- !u!114 &2045209217
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1939714913}
+  m_GameObject: {fileID: 2045209216}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5a4e8e0da45c445fbbaf0498eb9945ea, type: 3}
+  m_Script: {fileID: 11500000, guid: 7fcb5a9c98864d4399c81320280a4e3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _detailCount: 3
-  playerControllerPrefab: {fileID: 0}
-  _snakePrefab: {fileID: 6465175757266603461, guid: c07cfae07d5a72245a3fb863a7a0007f, type: 3}
-  _snake: {fileID: 0}
-  _playerController: {fileID: 0}
---- !u!4 &1939714915
+--- !u!4 &2045209218
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1939714913}
+  m_GameObject: {fileID: 2045209216}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.3868337, y: 4.1075215, z: 88.36858}
+  m_LocalPosition: {x: 0.8059239, y: 129.77374, z: -177.10173}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -750,5 +746,5 @@ SceneRoots:
   - {fileID: 832575519}
   - {fileID: 1143276987}
   - {fileID: 525866996}
-  - {fileID: 1939714915}
   - {fileID: 1451780144}
+  - {fileID: 2045209218}

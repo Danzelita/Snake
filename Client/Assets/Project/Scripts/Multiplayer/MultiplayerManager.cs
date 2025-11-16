@@ -1,21 +1,39 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using Colyseus;
+using Project.Scripts.Gameplay.Controller;
+using Project.Scripts.Gameplay.Services.Snakes;
+using Project.Scripts.Gameplay.Snakes.Core;
+using Project.Scripts.Logic;
 using Project.Scripts.Multiplayer.Generated;
+using Project.Scripts.Settings;
 using UnityEngine;
 
 namespace Project.Scripts.Multiplayer
 {
     public class MultiplayerManager : ColyseusManager<MultiplayerManager>
     {
-        #region Server
+        public string SessionId => _room.SessionId;
+
+        [SerializeField] private CameraManager _cameraManager;
+        [SerializeField] private Snake _snakePrefab;
+        [SerializeField] private PlayerController _playerControllerPrefab;
+        [SerializeField] private PlayerAim _playerAimPrefab;
 
         private const string GameRoomName = "state_handler";
 
         private ColyseusRoom<State> _room;
+        private SnakeService _snakeService;
+        private SettingsProvider _settingsProvider;
+
 
         protected override void Awake()
         {
             base.Awake();
+            
+            _settingsProvider = new SettingsProvider();
+            _settingsProvider.LoadGameSettings();
 
             DontDestroyOnLoad(gameObject);
 
@@ -25,81 +43,48 @@ namespace Project.Scripts.Multiplayer
 
         private async void Connect()
         {
-            _room = await client.JoinOrCreate<State>(GameRoomName);
+            int skinCount = _settingsProvider.GameSettings.SkinsSettings.Skins.Length;
+
+            Dictionary<string, object> data = new()
+            {
+                ["skins"] = skinCount,
+            };
+            
+            _room = await client.JoinOrCreate<State>(GameRoomName, data);
 
             _room.OnStateChange += RoomOnStateChange;
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.J)) 
+                Connect();
+
+            if (Input.GetKeyDown(KeyCode.L)) 
+                LeaveRoom();
         }
 
         private void RoomOnStateChange(State state, bool isFirstState)
         {
             if (isFirstState == false) return;
 
+            SnakeFactory snakeFactory = new SnakeFactory(
+                _cameraManager,
+                _snakePrefab,
+                _playerControllerPrefab,
+                _playerAimPrefab,
+                _settingsProvider.GameSettings
+                );
+            
+            _snakeService = new SnakeService(this, snakeFactory);
+            _snakeService.Init(state.players);
+
+
             _room.OnStateChange -= RoomOnStateChange;
-            state.players.ForEach((key, player) =>
-            {
-                if (key == _room.SessionId)
-                    CreatePlayer(key, player);
-                else
-                    CreateEnemy(key, player);
-            });
-
-            _room.State.players.OnAdd += CreateEnemy;
-            _room.State.players.OnRemove += RemoveEnemy;
         }
 
-        public void SendToServer(string key, Dictionary<string, object> data) =>
+        public void SendToServer(string key, Dictionary<string, object> data) => 
             _room.Send(key, data);
-
-        #endregion
-
-
-        #region Player
-
-        [SerializeField] private PlayerAim _playerAimPrefab;
-        [SerializeField] private Snake _snakePrefab;
-        [SerializeField] private PlayerController playerControllerPrefab;
-
-        private void CreatePlayer(string key, Player player)
-        {
-            Vector3 position = new Vector3(player.x, 0f, player.z);
-            Quaternion rotation = Quaternion.identity;
-            
-            Snake newSnake = Instantiate(_snakePrefab, position, rotation);
-            newSnake.Init(player.d);
-            
-            PlayerAim playerAim = Instantiate(_playerAimPrefab, position, rotation);
-            playerAim.Init(_snakePrefab.Speed);
-
-            PlayerController newPlayerController = Instantiate(playerControllerPrefab);
-            newPlayerController.Init(playerAim, player, newSnake, this);
-        }
-
-        #endregion
-
-        #region Enemy
-
-        private readonly Dictionary<string, EnemyController> _enemies = new();
-
-        private void CreateEnemy(string key, Player player)
-        {
-            Vector3 position = new Vector3(player.x, 0f, player.z);
-            Snake newSnake = Instantiate(_snakePrefab, position, Quaternion.identity);
-            newSnake.Init(player.d);
-
-            var enemyController = new EnemyController(newSnake, player);
-
-            _enemies.Add(key, enemyController);
-        }
-
-        private void RemoveEnemy(string key, Player value)
-        {
-            if (_enemies.Remove(key, out EnemyController enemyController) == false) 
-                return;
-            
-            enemyController.Dispose();
-        }
-
-        #endregion
 
         protected override void OnApplicationQuit()
         {
@@ -108,7 +93,13 @@ namespace Project.Scripts.Multiplayer
             LeaveRoom();
         }
 
-        public void LeaveRoom() =>
-            _room?.Leave();
+        public void LeaveRoom()
+        {
+            if (_room == null)
+                return;
+            
+            _room.Leave();
+            _snakeService?.Dispose();
+        }
     }
 }

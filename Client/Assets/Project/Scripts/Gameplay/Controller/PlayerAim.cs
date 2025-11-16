@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Project.Scripts
+namespace Project.Scripts.Gameplay.Controller
 {
     public class PlayerAim : MonoBehaviour
     {
@@ -9,10 +9,9 @@ namespace Project.Scripts
         private Vector3 _targetDirection;
         private float _speed;
 
-        public void Init(float speed)
-        {
+        public void Init(float speed) => 
             _speed = speed;
-        }
+
         private void Update()
         {
             Move();
@@ -21,6 +20,10 @@ namespace Project.Scripts
 
         private void Rotate()
         {
+            if (_targetDirection == Vector3.zero)
+            {
+                return;
+            }
             Quaternion targetRotation = Quaternion.LookRotation(_targetDirection);
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, _rotationSpeed * Time.deltaTime);
         }
@@ -28,12 +31,13 @@ namespace Project.Scripts
         private void Move() => 
             transform.position += transform.forward * _speed * Time.deltaTime;
 
-        public void SetTargetDirection(Vector3 point)
-        {
+        public void SetTargetDirection(Vector3 point) => 
             _targetDirection = point - transform.position;
-        }
 
         public void GetMoveInfo(out Vector3 position) => 
             position = transform.position;
+
+        public void Destroy() => 
+            Destroy(gameObject);
     }
 }

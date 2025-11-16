@@ -1,8 +1,12 @@
 using System.Collections.Generic;
+using Project.Scripts.Gameplay.Snakes.Skins;
+using Project.Scripts.Logic;
+using Project.Scripts.Settings;
+using Project.Scripts.Settings.Skins;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Project.Scripts
+namespace Project.Scripts.Gameplay.Snakes.Core
 {
     public class SnakeTrail : MonoBehaviour
     {
@@ -10,15 +14,15 @@ namespace Project.Scripts
         [SerializeField] private float _detailDistance = 1f;
         
         private Transform _head;
-        private float _speed;
         private readonly List<Transform> _details = new();
         private readonly List<Vector3> _positionHistory = new();
         private readonly List<Quaternion> _rotationHistory = new();
+        private SkinSettings _skinSettings;
 
-        public void Init(Transform head, float speed, int detailCount)
+        public void Init(Transform head, SkinSettings skinSettings, int detailCount)
         {
             _head = head;
-            _speed = speed;
+            _skinSettings = skinSettings;
             
             _details.Add(transform);
             _positionHistory.Add(_head.position);
@@ -26,6 +30,8 @@ namespace Project.Scripts
             
             _positionHistory.Add(transform.position);
             _rotationHistory.Add(transform.rotation);
+            
+            GetComponent<SkinDisplay>().SetSkin(_skinSettings);
 
             SetDetailCount(detailCount);
         }
@@ -60,6 +66,8 @@ namespace Project.Scripts
             
             _positionHistory.Add(position);
             _rotationHistory.Add(rotation);
+            
+            newDetail.GetComponent<SkinDisplay>().SetSkin(_skinSettings);
         }
 
         private void RemoveDetail()

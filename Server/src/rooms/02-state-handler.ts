@@ -9,17 +9,25 @@ export class Player extends Schema {
     z = Math.floor(Math.random() * 128) - 64;
 
     @type("uint8")
-    d = 2;
+    d = Math.floor(Math.random() * 8);
+
+    @type("uint8")
+    skin = 0;
+
+    constructor(skinIndex: number){
+        super();
+
+        this.skin = skinIndex;
+    }
 }
 
 export class State extends Schema {
     @type({ map: Player })
     players = new MapSchema<Player>();
 
-    something = "This attribute won't be sent to the client-side";
-
     createPlayer(sessionId: string) {
-        this.players.set(sessionId, new Player());
+        const skinIndex = this.GetNextSkinIndex();
+        this.players.set(sessionId, new Player(skinIndex));
     }
 
     removePlayer(sessionId: string) {
@@ -32,16 +40,26 @@ export class State extends Schema {
         player.x = movement.x;
         player.z = movement.z;
     }
+
+    skinsLenght = 0;
+    lastSkinIndex = 0;
+    GetNextSkinIndex() {
+        const index = this.lastSkinIndex;
+        this.lastSkinIndex = (this.lastSkinIndex + 1) % this.skinsLenght;
+        return index;
+    }
 }
 
 export class StateHandlerRoom extends Room<State> {
-    maxClients = 4;
+    maxClients = 50;
 
     onCreate (options) {
         console.log("StateHandlerRoom created!", options);
-        this.setPatchRate(200);
+        this.setPatchRate(20);
 
         this.setState(new State());
+
+        this.state.skinsLenght = options.skins;
 
         this.onMessage("move", (client, data) => {
             this.state.movePlayer(client.sessionId, data);

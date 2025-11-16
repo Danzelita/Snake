@@ -18,6 +18,9 @@ namespace Project.Scripts.Multiplayer.Generated
 
 		[Type(2, "uint8")]
 		public byte d = default(byte);
+
+		[Type(3, "uint8")]
+		public byte skin = default(byte);
 	}
 }
 

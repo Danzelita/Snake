@@ -1,17 +1,18 @@
 using System;
 using System.Collections.Generic;
 using Colyseus.Schema;
+using Project.Scripts.Gameplay.Snakes.Core;
 using Project.Scripts.Multiplayer.Generated;
 using UnityEngine;
 
-namespace Project.Scripts
+namespace Project.Scripts.Gameplay.Snakes.Network
 {
-    public class EnemyController : IDisposable
+    public class SnakeNetworkController : IDisposable
     {
         private readonly Player _player;
         private readonly Snake _snake;
 
-        public EnemyController(Snake snake, Player player)
+        public SnakeNetworkController(Snake snake, Player player)
         {
             _snake = snake;
             _player = player;
@@ -46,6 +47,7 @@ namespace Project.Scripts
         public void Dispose()
         {
             _player.OnChange -= OnChange;
+            
             _snake.Destroy();
         }
     }

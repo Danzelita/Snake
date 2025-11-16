@@ -1,6 +1,10 @@
+using Project.Scripts.Gameplay.Snakes.Skins;
+using Project.Scripts.Logic;
+using Project.Scripts.Settings;
+using Project.Scripts.Settings.Skins;
 using UnityEngine;
 
-namespace Project.Scripts
+namespace Project.Scripts.Gameplay.Snakes.Core
 {
     public class Snake : MonoBehaviour
     {
@@ -10,13 +14,14 @@ namespace Project.Scripts
         [SerializeField] private Transform _head;
         [SerializeField] private float _speed = 10f;
         [SerializeField] private float _rotateSpeed = 90f;
-        private Quaternion _targetRotation;
         private SnakeTrail _trail;
 
-        public void Init(int detailCount)
+        public void Init(SkinSettings skinSettings, int detailCount)
         {
             _trail = Instantiate(_trailPrefab, _head.position, Quaternion.identity);
-            _trail.Init(_head, _speed, detailCount);
+            _trail.Init(_head, skinSettings, detailCount);
+            
+            GetComponent<SkinDisplay>().SetSkin(skinSettings);
         }
         
         public void SetDetailCount(byte detailCount) =>
@@ -34,7 +39,7 @@ namespace Project.Scripts
         public void SetRotation(Vector3 point)
         {
             Vector3 toPoint = point - _head.position;
-            _targetRotation = Quaternion.LookRotation(toPoint, Vector3.up);
+            Quaternion.LookRotation(toPoint, Vector3.up);
             
             _head.rotation = Quaternion.LookRotation(toPoint, Vector3.up);
         }

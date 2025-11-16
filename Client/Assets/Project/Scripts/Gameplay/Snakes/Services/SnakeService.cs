@@ -7,7 +7,7 @@ using Project.Scripts.Multiplayer;
 using Project.Scripts.Multiplayer.Generated;
 using UnityEngine;
 
-namespace Project.Scripts.Gameplay.Services.Snakes
+namespace Project.Scripts.Gameplay.Snakes.Services
 {
     public class SnakeService : IDisposable
     {
@@ -37,7 +37,6 @@ namespace Project.Scripts.Gameplay.Services.Snakes
             statePlayers.OnAdd += CreateEnemy;
             statePlayers.OnRemove += RemoveEnemy;
         }
-
 
         private void CreatePlayer(string key, Player player)
         {
@@ -69,10 +68,7 @@ namespace Project.Scripts.Gameplay.Services.Snakes
                 return;
 
             networkController.Dispose();
-        }   
-
-        private Vector3 GetSnakeSpawnPosition(Player player) =>
-            new(player.x, 0f, player.z);
+        }
 
         public void Dispose()
         {
@@ -84,5 +80,8 @@ namespace Project.Scripts.Gameplay.Services.Snakes
             
             _enemies.Clear();
         }
+
+        private Vector3 GetSnakeSpawnPosition(Player player) =>
+            new(player.x, 0f, player.z);
     }
 }

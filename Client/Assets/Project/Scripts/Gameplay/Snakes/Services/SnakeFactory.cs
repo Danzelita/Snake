@@ -7,7 +7,7 @@ using Project.Scripts.Multiplayer.Generated;
 using Project.Scripts.Settings;
 using UnityEngine;
 
-namespace Project.Scripts.Gameplay.Services.Snakes
+namespace Project.Scripts.Gameplay.Snakes.Services
 {
     public class SnakeFactory
     {

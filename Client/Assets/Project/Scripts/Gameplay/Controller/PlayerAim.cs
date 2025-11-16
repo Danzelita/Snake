@@ -21,9 +21,8 @@ namespace Project.Scripts.Gameplay.Controller
         private void Rotate()
         {
             if (_targetDirection == Vector3.zero)
-            {
                 return;
-            }
+            
             Quaternion targetRotation = Quaternion.LookRotation(_targetDirection);
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, _rotationSpeed * Time.deltaTime);
         }

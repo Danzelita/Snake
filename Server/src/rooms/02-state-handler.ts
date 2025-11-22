@@ -1,6 +1,33 @@
 import { Room, Client } from "colyseus";
 import { Schema, type, MapSchema } from "@colyseus/schema";
 
+export class Vector2Float extends Schema{
+    @type("number")
+    x = Math.floor(Math.random() * 128) - 64;
+
+    @type("number")
+    z = Math.floor(Math.random() * 128) - 64;
+
+    constructor(x: number, z: number){
+        super()
+        this.x = x;
+        this.z = z;
+    }
+}
+export class FoodState extends Schema{
+    @type("string")
+    type = "Apple";
+
+    @type(Vector2Float)
+    position: Vector2Float;
+
+    constructor(type: string, position: Vector2Float){
+        super()
+        this.type = type;
+        this.position = position;
+    }
+}
+
 export class Player extends Schema {
     @type("number")
     x = Math.floor(Math.random() * 128) - 64;
@@ -8,8 +35,11 @@ export class Player extends Schema {
     @type("number")
     z = Math.floor(Math.random() * 128) - 64;
 
+    @type("uint16")
+    score = 20;
+
     @type("uint8")
-    d = Math.floor(Math.random() * 8);
+    details = 0;
 
     @type("uint8")
     skin = 0;
@@ -24,6 +54,36 @@ export class Player extends Schema {
 export class State extends Schema {
     @type({ map: Player })
     players = new MapSchema<Player>();
+
+    @type({map: FoodState})
+    foods = new MapSchema<FoodState>();
+
+    gameOverIDs = [];
+
+    CreateFood(type: string, position: Vector2Float){
+        const food = new FoodState(type, position);
+        this.foods.set(this.CreateUnicId(), food);
+    }
+
+    CollectFood(player: Player, data: any){
+        console.log(data);
+
+        if (this.foods.get(data.i) === undefined)
+            return;
+
+        this.foods.delete(data.i)
+
+        player.score += data.s;
+        player.details = Math.round(player.score / 10);
+        
+
+        const type = "Apple";
+        const position = new Vector2Float(
+            Math.floor(Math.random() * 256) - 128, 
+            Math.floor(Math.random() * 256) - 128            
+        );
+        this.CreateFood(type, position);
+    }
 
     createPlayer(sessionId: string) {
         const skinIndex = this.GetNextSkinIndex();
@@ -41,6 +101,41 @@ export class State extends Schema {
         player.z = movement.z;
     }
 
+    gameOver(data : any){
+        const detailsPositions = JSON.parse(data);
+        const clientID = detailsPositions.Id;
+        console.log(clientID);
+        console.log(data);
+
+        const gameOverId = this.gameOverIDs.find((value) => value === clientID);
+        if (gameOverId !== undefined)
+            return;
+
+        this.gameOverIDs.push(clientID);
+        this.delayClearGameOverIds(clientID);
+
+        if (this.players.has(clientID)){
+            this.removePlayer(clientID);   
+        }
+
+        for (let i = 0; i < detailsPositions.Ds.length; i++) {
+            this.CreateFood("Apple", new Vector2Float(
+                detailsPositions.Ds[i].X,
+                detailsPositions.Ds[i].Z
+            ));
+        }
+    }
+    async delayClearGameOverIds(clientID){
+        await new Promise(resolve => setTimeout(resolve, 10000));
+
+        const index = this.gameOverIDs.findIndex((value) => value === clientID);
+        if (index <= -1) {
+            return;
+        }
+
+        this.gameOverIDs.splice(index, 1);
+    }
+
     skinsLenght = 0;
     lastSkinIndex = 0;
     GetNextSkinIndex() {
@@ -48,10 +143,16 @@ export class State extends Schema {
         this.lastSkinIndex = (this.lastSkinIndex + 1) % this.skinsLenght;
         return index;
     }
+
+    lastUnicId = 0;
+    CreateUnicId(){
+        return (this.lastUnicId++).toString();
+    }
 }
 
 export class StateHandlerRoom extends Room<State> {
     maxClients = 50;
+    startFoodCount = 300;    
 
     onCreate (options) {
         console.log("StateHandlerRoom created!", options);
@@ -64,6 +165,27 @@ export class StateHandlerRoom extends Room<State> {
         this.onMessage("move", (client, data) => {
             this.state.movePlayer(client.sessionId, data);
         });
+
+        this.onMessage("collect", (client, data) => {
+            const player = this.state.players.get(client.sessionId);
+            this.state.CollectFood(player, data);
+        });
+
+        this.onMessage("gameOver", (client, data) => {
+            this.state.gameOver(data);
+        });
+
+        for (let i = 0; i < this.startFoodCount; i++) {
+
+            const type = "Apple";
+
+            const position = new Vector2Float(
+                Math.floor(Math.random() * 256) - 128, 
+                Math.floor(Math.random() * 256) - 128
+            );
+            
+            this.state.CreateFood(type, position);
+        }
     }
 
     onAuth(client, options, req) {
@@ -71,7 +193,7 @@ export class StateHandlerRoom extends Room<State> {
     }
 
     onJoin (client: Client) {
-        this.state.createPlayer(client.sessionId);
+        //this.state.createPlayer(client.sessionId);
     }
 
     onLeave (client) {

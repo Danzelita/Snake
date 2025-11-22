@@ -46,6 +46,7 @@ namespace Project.Scripts.Gameplay.Snakes.Services
             _playerSnakeNetworkController = _snakeFactory.CreatePlayer(
                 _multiplayerManager,
                 player,
+                key,
                 spawnPosition,
                 rotation,
                 out PlayerController playerController
@@ -58,7 +59,7 @@ namespace Project.Scripts.Gameplay.Snakes.Services
             Vector3 spawnPosition = GetSnakeSpawnPosition(player);
             Quaternion rotation = Quaternion.identity;
             
-            SnakeNetworkController networkController = _snakeFactory.CreateEnemy(player, spawnPosition, rotation);
+            SnakeNetworkController networkController = _snakeFactory.CreateEnemy(player, key, spawnPosition, rotation);
             _enemies.Add(key, networkController);
         }
 
@@ -75,10 +76,19 @@ namespace Project.Scripts.Gameplay.Snakes.Services
             foreach (SnakeNetworkController networkController in _enemies.Values) 
                 networkController.Dispose();
             
-            _playerSnakeNetworkController.Dispose();
-            _playerController.Destroy();
+            _playerSnakeNetworkController?.Dispose();
+            _playerController?.Destroy();
             
             _enemies.Clear();
+        }
+
+        public void DestroyPlayer()
+        {
+            _playerSnakeNetworkController?.Dispose();
+            _playerController?.Destroy();
+            
+            _playerSnakeNetworkController = null;
+            _playerController = null;
         }
 
         private Vector3 GetSnakeSpawnPosition(Player player) =>

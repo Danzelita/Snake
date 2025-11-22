@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: bc4c9a521b7c4c759dd1cbd5a12a9341
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - _snakeDeathParticle: {fileID: 2419459694314481125, guid: f18bc8e86746677419b9e0340a6aa844, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

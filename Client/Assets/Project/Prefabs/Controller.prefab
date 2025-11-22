@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8873906623096842106}
   - component: {fileID: 6682390961041265548}
+  - component: {fileID: 1582711011175689366}
   m_Layer: 0
   m_Name: Controller
   m_TagString: Untagged
@@ -45,7 +46,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 315161a1735a13248a4259cc01b3d281, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CameraOffsetY: 11
   _cursor: {fileID: 5736868485319225393}
+  playerInteraction: {fileID: 1582711011175689366}
+--- !u!114 &1582711011175689366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3662882011406920110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14e3ae3e09154424a1b29c3e7c33a96c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _collisionLayer:
+    serializedVersion: 2
+    m_Bits: 1792
+  _overlapRadius: 0.6
 --- !u!1 &3667485715644456202
 GameObject:
   m_ObjectHideFlags: 0

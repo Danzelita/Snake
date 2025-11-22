@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Colyseus;
 using Project.Scripts.Gameplay.Controller;
+using Project.Scripts.Gameplay.Foods.Services;
 using Project.Scripts.Gameplay.Snakes.Core;
 using Project.Scripts.Gameplay.Snakes.Services;
 using Project.Scripts.Logic;
@@ -15,6 +16,7 @@ namespace Project.Scripts.Multiplayer
     public class MultiplayerManager : ColyseusManager<MultiplayerManager>
     {
         public string SessionId => _room.SessionId;
+        public SnakeService SnakeService => _snakeService;
 
         [SerializeField] private CameraManager _cameraManager;
         [SerializeField] private Snake _snakePrefab;
@@ -24,14 +26,15 @@ namespace Project.Scripts.Multiplayer
         private const string GameRoomName = "state_handler";
 
         private ColyseusRoom<State> _room;
-        private SnakeService _snakeService;
         private SettingsProvider _settingsProvider;
+        private SnakeService _snakeService;
+        private FoodService _foodService;
 
 
         protected override void Awake()
         {
             base.Awake();
-            
+
             _settingsProvider = new SettingsProvider();
             _settingsProvider.LoadGameSettings();
 
@@ -49,7 +52,7 @@ namespace Project.Scripts.Multiplayer
             {
                 ["skins"] = skinCount,
             };
-            
+
             _room = await client.JoinOrCreate<State>(GameRoomName, data);
 
             _room.OnStateChange += RoomOnStateChange;
@@ -57,10 +60,10 @@ namespace Project.Scripts.Multiplayer
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.J)) 
+            if (Input.GetKeyDown(KeyCode.J))
                 Connect();
 
-            if (Input.GetKeyDown(KeyCode.L)) 
+            if (Input.GetKeyDown(KeyCode.L))
                 LeaveRoom();
         }
 
@@ -74,16 +77,22 @@ namespace Project.Scripts.Multiplayer
                 _playerControllerPrefab,
                 _playerAimPrefab,
                 _settingsProvider.GameSettings
-                );
-            
+            );
+
             _snakeService = new SnakeService(this, snakeFactory);
             _snakeService.Init(state.players);
+
+            _foodService = new FoodService(this, _settingsProvider.GameSettings.FoodsSettings);
+            _foodService.Init(state.foods);
 
 
             _room.OnStateChange -= RoomOnStateChange;
         }
 
-        public void SendToServer(string key, Dictionary<string, object> data) => 
+        public void SendToServer(string key, Dictionary<string, object> data) =>
+            _room.Send(key, data);
+
+        public void SendToServer(string key, string data) =>
             _room.Send(key, data);
 
         protected override void OnApplicationQuit()
@@ -97,9 +106,15 @@ namespace Project.Scripts.Multiplayer
         {
             if (_room == null)
                 return;
-            
+
             _room.Leave();
-            _snakeService?.Dispose();
+            _snakeService.Dispose();
+            _foodService.Dispose();
+        }
+
+        public void Join(string inputName)
+        {
+            
         }
     }
 }

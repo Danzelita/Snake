@@ -1,3 +1,4 @@
+using Project.Scripts.Settings.Foods;
 using Project.Scripts.Settings.Skins;
 using UnityEngine;
 
@@ -7,5 +8,6 @@ namespace Project.Scripts.Settings
     public class GameSettings : ScriptableObject
     {
         public SkinsSettings SkinsSettings;
+        public FoodsSettings FoodsSettings;
     }
 }

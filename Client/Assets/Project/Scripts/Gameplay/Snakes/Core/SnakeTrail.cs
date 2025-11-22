@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using Project.Scripts.Data;
+using Project.Scripts.Gameplay.Snakes.Animation;
 using Project.Scripts.Gameplay.Snakes.Skins;
 using Project.Scripts.Logic;
 using Project.Scripts.Settings;
@@ -18,11 +20,15 @@ namespace Project.Scripts.Gameplay.Snakes.Core
         private readonly List<Vector3> _positionHistory = new();
         private readonly List<Quaternion> _rotationHistory = new();
         private SkinSettings _skinSettings;
+        private int _playerLayer;
+        private bool _isPlayer;
 
-        public void Init(Transform head, SkinSettings skinSettings, int detailCount)
+        public void Init(Transform head, SkinSettings skinSettings, int detailCount, bool isPlayer, int layerMask)
         {
             _head = head;
             _skinSettings = skinSettings;
+            _isPlayer = isPlayer;
+            _playerLayer = layerMask;
             
             _details.Add(transform);
             _positionHistory.Add(_head.position);
@@ -31,7 +37,11 @@ namespace Project.Scripts.Gameplay.Snakes.Core
             _positionHistory.Add(transform.position);
             _rotationHistory.Add(transform.rotation);
             
+            if (isPlayer) 
+                SetPlayerLayer(gameObject);
+            
             GetComponent<SkinDisplay>().SetSkin(_skinSettings);
+            GetComponent<SnakeEffects>().Init(_skinSettings);
 
             SetDetailCount(detailCount);
         }
@@ -40,6 +50,42 @@ namespace Project.Scripts.Gameplay.Snakes.Core
         {
             foreach (var detail in _details) 
                 Destroy(detail.gameObject);   
+        }
+
+        public DetailPositionsData GetDetailPositions()
+        {
+            int detailsCount = _details.Count;
+            DetailPositionsData detailPositionsData = new(detailsCount);
+            
+            for (int i = 0; i < detailsCount; i++) 
+                detailPositionsData.Ds[i] = _details[i].position.ToVector2Data();
+            
+            return detailPositionsData;
+        }
+
+        private void Update()
+        {
+            float distance = (_head.position - _positionHistory[0]).magnitude;
+            
+            while (distance > _detailDistance)
+            {
+                Vector3 direction = (_head.position - _positionHistory[0]).normalized;
+                
+                _positionHistory.Insert(0, _positionHistory[0] + direction * _detailDistance);
+                _positionHistory.RemoveAt(_positionHistory.Count - 1);
+                
+                _rotationHistory.Insert(0, _head.rotation);
+                _rotationHistory.RemoveAt(_rotationHistory.Count - 1);
+                
+                distance -= _detailDistance;
+            }
+
+            for (int i = 0; i < _details.Count; i++)
+            {
+                float percent = distance / _detailDistance;
+                _details[i].position = Vector3.Lerp(_positionHistory[i + 1], _positionHistory[i], percent);
+                _details[i].rotation = Quaternion.Lerp(_rotationHistory[i + 1], _rotationHistory[i], percent);
+            }
         }
 
         public void SetDetailCount(int detailCount)
@@ -68,6 +114,10 @@ namespace Project.Scripts.Gameplay.Snakes.Core
             _rotationHistory.Add(rotation);
             
             newDetail.GetComponent<SkinDisplay>().SetSkin(_skinSettings);
+            newDetail.GetComponent<SnakeEffects>().Init(_skinSettings);
+
+            if (_isPlayer) 
+                SetPlayerLayer(newDetail.gameObject);
         }
 
         private void RemoveDetail()
@@ -85,29 +135,12 @@ namespace Project.Scripts.Gameplay.Snakes.Core
             _rotationHistory.RemoveAt(_rotationHistory.Count - 1);
         }
 
-        private void Update()
+        private void SetPlayerLayer(GameObject playerObject)
         {
-            float distance = (_head.position - _positionHistory[0]).magnitude;
-            
-            while (distance > _detailDistance)
-            {
-                Vector3 direction = (_head.position - _positionHistory[0]).normalized;
+            playerObject.layer = _playerLayer;
                 
-                _positionHistory.Insert(0, _positionHistory[0] + direction * _detailDistance);
-                _positionHistory.RemoveAt(_positionHistory.Count - 1);
-                
-                _rotationHistory.Insert(0, _head.rotation);
-                _rotationHistory.RemoveAt(_rotationHistory.Count - 1);
-                
-                distance -= _detailDistance;
-            }
-
-            for (int i = 0; i < _details.Count; i++)
-            {
-                float percent = distance / _detailDistance;
-                _details[i].position = Vector3.Lerp(_positionHistory[i + 1], _positionHistory[i], percent);
-                _details[i].rotation = Quaternion.Lerp(_rotationHistory[i + 1], _rotationHistory[i], percent);
-            }
+            for (int i = 0; i < playerObject.transform.childCount; i++) 
+                playerObject.transform.GetChild(i).gameObject.layer = _playerLayer;
         }
     }
 }

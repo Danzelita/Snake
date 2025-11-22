@@ -12,6 +12,9 @@ namespace Project.Scripts.Multiplayer.Generated
 	public partial class State : Schema {
 		[Type(0, "map", typeof(MapSchema<Player>))]
 		public MapSchema<Player> players = new MapSchema<Player>();
+
+		[Type(1, "map", typeof(MapSchema<FoodState>))]
+		public MapSchema<FoodState> foods = new MapSchema<FoodState>();
 	}
 }
 

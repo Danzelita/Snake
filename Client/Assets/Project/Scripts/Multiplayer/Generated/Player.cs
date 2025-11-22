@@ -16,10 +16,13 @@ namespace Project.Scripts.Multiplayer.Generated
 		[Type(1, "number")]
 		public float z = default(float);
 
-		[Type(2, "uint8")]
-		public byte d = default(byte);
+		[Type(2, "uint16")]
+		public ushort score = default(ushort);
 
 		[Type(3, "uint8")]
+		public byte details = default(byte);
+
+		[Type(4, "uint8")]
 		public byte skin = default(byte);
 	}
 }

@@ -10,7 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 170515465414779964}
   - component: {fileID: 7905452080735475023}
-  m_Layer: 0
+  - component: {fileID: 7413138791401765935}
+  m_Layer: 8
   m_Name: Detail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -48,6 +49,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _meshRenderers:
   - {fileID: 6368377765380490547}
+--- !u!114 &7413138791401765935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4538586945598769266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc4c9a521b7c4c759dd1cbd5a12a9341, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _snakeDeathParticle: {fileID: 2419459694314481125, guid: f18bc8e86746677419b9e0340a6aa844, type: 3}
 --- !u!1 &4712638964283349762
 GameObject:
   m_ObjectHideFlags: 0
@@ -60,7 +74,7 @@ GameObject:
   - component: {fileID: 6449710229909399409}
   - component: {fileID: 7937137158241981759}
   - component: {fileID: 327898130096736787}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -165,7 +179,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7804440547043367714}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -199,7 +213,7 @@ GameObject:
   m_Component:
   - component: {fileID: 862945777891070294}
   - component: {fileID: 6141083763198322903}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -290,9 +304,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -4856336772789610261, guid: 6f36cd16b6c365f4cad37fb84deec7ec, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 6f36cd16b6c365f4cad37fb84deec7ec, type: 3}
       propertyPath: m_Name
       value: Detail
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6f36cd16b6c365f4cad37fb84deec7ec, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 6f36cd16b6c365f4cad37fb84deec7ec, type: 3}
       propertyPath: m_IsActive

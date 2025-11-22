@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: GameSettings
   m_EditorClassIdentifier: 
   SkinsSettings: {fileID: 11400000, guid: 02696c9331cbe45419d6d878afe5eb6b, type: 2}
+  FoodsSettings: {fileID: 11400000, guid: 0fb98c6ac4fb7fd4cb0f6b52cb66cc0d, type: 2}

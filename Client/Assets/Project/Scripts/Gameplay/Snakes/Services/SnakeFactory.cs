@@ -35,17 +35,18 @@ namespace Project.Scripts.Gameplay.Snakes.Services
         public SnakeNetworkController CreatePlayer(
             MultiplayerManager multiplayerManager,
             Player player,
+            string sessionId,
             Vector3 spawnPosition,
             Quaternion rotation,
             out PlayerController playerController
             )
         {
-            Snake newSnake = CreateSnake(player, spawnPosition, rotation);
+            Snake newSnake = CreateSnake(player, sessionId, spawnPosition, rotation, isPlayer: true);
             
             PlayerController newPlayerController = Object.Instantiate(_playerControllerPrefab);
             PlayerAim newPlayerAim = Object.Instantiate(_playerAimPrefab, spawnPosition, rotation);
 
-            newPlayerController.Init(newPlayerAim, multiplayerManager);
+            newPlayerController.Init(newPlayerAim, newSnake, multiplayerManager);
             newPlayerAim.Init(newSnake.Speed);
 
             SnakeNetworkController snakeNetworkController = new(newSnake, player);
@@ -57,20 +58,20 @@ namespace Project.Scripts.Gameplay.Snakes.Services
             return snakeNetworkController;
         }
 
-        public SnakeNetworkController CreateEnemy(Player player, Vector3 spawnPosition, Quaternion rotation)
+        public SnakeNetworkController CreateEnemy(Player player, string sessionId, Vector3 spawnPosition, Quaternion rotation)
         {
-            Snake newSnake = CreateSnake(player, spawnPosition, rotation);
+            Snake newSnake = CreateSnake(player, sessionId, spawnPosition, rotation);
             
             SnakeNetworkController snakeNetworkController = new(newSnake, player);
             
             return snakeNetworkController;
         }
 
-        private Snake CreateSnake(Player player, Vector3 spawnPosition, Quaternion spawnRotation)
+        private Snake CreateSnake(Player player, string sessionId, Vector3 spawnPosition, Quaternion spawnRotation, bool isPlayer = false)
         {
             Snake snakePrefab = _snakePrefab;
             Snake newSnake = Object.Instantiate(snakePrefab, spawnPosition, spawnRotation);
-            newSnake.Init(_gameSettings.SkinsSettings.Skins[player.skin],player.d);
+            newSnake.Init(_gameSettings.SkinsSettings.Skins[player.skin],player.details, sessionId, isPlayer);
             
             return newSnake;
         }

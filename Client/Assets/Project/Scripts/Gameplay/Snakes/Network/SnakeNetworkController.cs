@@ -33,7 +33,8 @@ namespace Project.Scripts.Gameplay.Snakes.Network
                     case "z":
                         position.z = (float)change.Value;
                         break;
-                    case "d":
+                    case "details":
+                        Debug.Log((byte)change.Value);
                         _snake.SetDetailCount((byte)change.Value);
                         break;
                     default:

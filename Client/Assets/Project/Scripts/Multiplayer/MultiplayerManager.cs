@@ -10,14 +10,18 @@ using Project.Scripts.Logic;
 using Project.Scripts.Multiplayer.Generated;
 using Project.Scripts.Settings;
 using Project.Scripts.UI;
+using Project.Scripts.UI.Screens.Gameplay.LeaderBoard.Services;
 using UnityEngine;
 
 namespace Project.Scripts.Multiplayer
 {
     public class MultiplayerManager : ColyseusManager<MultiplayerManager>
     {
+        public float Ping { get; set; }
+        public Action<float> OnPingChange;
         public string SessionId => _room.SessionId;
         public SnakeService SnakeService => _snakeService;
+        public LeaderBoardService LeaderBoardService => _leaderBoardService;
 
         [SerializeField] private UIRoot _uiRoot;
         [SerializeField] private CameraManager _cameraManager;
@@ -31,6 +35,8 @@ namespace Project.Scripts.Multiplayer
         private SettingsProvider _settingsProvider;
         private SnakeService _snakeService;
         private FoodService _foodService;
+        private LeaderBoardService _leaderBoardService;
+        private float _lastPingSendTime;
 
 
         protected override void Awake()
@@ -67,11 +73,15 @@ namespace Project.Scripts.Multiplayer
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.J))
-                Connect();
+            if (_room == null) 
+                return;
+            if(Time.time - _lastPingSendTime < 1f)
+                return;
 
-            if (Input.GetKeyDown(KeyCode.L))
-                LeaveRoom();
+            _lastPingSendTime = Time.time;
+
+            float localTime = Time.realtimeSinceStartup;
+            SendToServer("ping", localTime.ToString());
         }
 
         private void RoomOnStateChange(State state, bool isFirstState)
@@ -92,6 +102,15 @@ namespace Project.Scripts.Multiplayer
             _foodService = new FoodService(this, _settingsProvider.GameSettings.FoodsSettings);
             _foodService.Init(state.foods);
 
+            _leaderBoardService = new LeaderBoardService();
+            _leaderBoardService.Init(state.players);
+            
+            _room.OnMessage<string>("pong", (data) =>
+            {
+                float time = float.Parse(data);
+                Ping = Time.realtimeSinceStartup - time;
+                OnPingChange?.Invoke(Ping);
+            });
 
             _room.OnStateChange -= RoomOnStateChange;
         }
@@ -119,8 +138,11 @@ namespace Project.Scripts.Multiplayer
             _foodService.Dispose();
         }
 
-        public void Join(string inputName) => 
+        public void Join(string inputName)
+        {
             SendToServer("join", inputName);
+            _uiRoot.OpenGameplayScreen();
+        }
 
         public void Join(string playerName, float delay) => 
             StartCoroutine(DelayJoin(playerName, delay));

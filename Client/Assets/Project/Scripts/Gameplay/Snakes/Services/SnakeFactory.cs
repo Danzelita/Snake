@@ -1,6 +1,7 @@
 using Project.Scripts.Gameplay.Controller;
 using Project.Scripts.Gameplay.Snakes.Core;
 using Project.Scripts.Gameplay.Snakes.Network;
+using Project.Scripts.Gameplay.Snakes.Skins;
 using Project.Scripts.Logic;
 using Project.Scripts.Multiplayer;
 using Project.Scripts.Multiplayer.Generated;
@@ -72,6 +73,7 @@ namespace Project.Scripts.Gameplay.Snakes.Services
             Snake snakePrefab = _snakePrefab;
             Snake newSnake = Object.Instantiate(snakePrefab, spawnPosition, spawnRotation);
             newSnake.Init(_gameSettings.SkinsSettings.Skins[player.skin],player.details, sessionId, isPlayer);
+            newSnake.GetComponent<NicknameDisplay>().SetNickname(player.name);
             
             return newSnake;
         }

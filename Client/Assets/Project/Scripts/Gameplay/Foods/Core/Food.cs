@@ -10,14 +10,18 @@ namespace Project.Scripts.Gameplay.Foods.Core
     public class Food : MonoBehaviour
     {
         [SerializeField] private Collider _collider;
+        
+        public Action OnCollect;
+        
         private FoodState _foodState;
-        private Action _onCollect;
+        private Action _sendMessageOnCollect;
+
 
         public void Init(FoodState foodState, Action onCollect)
         {
             _foodState = foodState;
             _foodState.OnChange += FoodStateOnOnChange;
-            _onCollect = onCollect;
+            _sendMessageOnCollect = onCollect;
         }
 
         private void FoodStateOnOnChange(List<DataChange> changes)
@@ -27,11 +31,9 @@ namespace Project.Scripts.Gameplay.Foods.Core
         public void Destroy()
         {
             _foodState.OnChange -= FoodStateOnOnChange;
-            StartCoroutine(DelayDestroy());
-            OnCollect?.Invoke();
+            //StartCoroutine(DelayDestroy());
+            Destroy(gameObject);
         }
-
-        public Action OnCollect;
 
         private IEnumerator DelayDestroy()
         {
@@ -41,8 +43,8 @@ namespace Project.Scripts.Gameplay.Foods.Core
 
         public void Collect()
         {
-            _onCollect?.Invoke();
-            _collider.enabled = false;
+            _sendMessageOnCollect?.Invoke();
+            OnCollect?.Invoke();
         }
     }
 }

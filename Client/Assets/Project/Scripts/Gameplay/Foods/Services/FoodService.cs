@@ -52,9 +52,6 @@ namespace Project.Scripts.Gameplay.Foods.Services
                 _data[Type] = foodSettings.Type.ToString();
                 _data[Score] = foodSettings.Score;
                 _multiplayerManager.SendToServer("collect", _data);
-
-                string a = $"{key}|{(int)foodSettings.Type}|{foodSettings.Score}";
-                Debug.Log(a);
             });
             
             _foods.Add(key, newFood);

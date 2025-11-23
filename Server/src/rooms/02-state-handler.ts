@@ -184,6 +184,10 @@ export class StateHandlerRoom extends Room<State> {
             this.state.gameOver(data);
         });
 
+        this.onMessage("ping", (client, data) => {
+            client.send("pong", data);
+        });
+
         for (let i = 0; i < this.startAppleFoodCount; i++) {
             const type = "Apple";
             const position = new Vector2Float(
@@ -211,7 +215,9 @@ export class StateHandlerRoom extends Room<State> {
     }
 
     onLeave (client) {
-        this.state.removePlayer(client.sessionId);
+        if (this.state.players.has(client.sessionId)){
+            this.state.removePlayer(client.sessionId);
+        }
     }
 
     onDispose () {

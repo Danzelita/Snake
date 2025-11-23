@@ -4,6 +4,7 @@ namespace Project.Scripts.UI
 {
     public class UIRoot : MonoBehaviour
     {
+        [SerializeField] private StarterPopup _starterPopup;
         [SerializeField] private Transform _loadingScreen;
         
         public void ShowLoadingScreen() => 
@@ -12,14 +13,10 @@ namespace Project.Scripts.UI
         public void HideLoadingScreen() => 
             _loadingScreen.gameObject.SetActive(false);
 
-        public void OpenStarterPopup()
-        {
-            
-        }
+        public void OpenStarterPopup() => 
+            _starterPopup.Open();
 
-        public void CloseStarterPopup()
-        {
-            
-        }
+        public void CloseStarterPopup() => 
+            _starterPopup.Close();
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using Project.Scripts.Multiplayer;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,7 +8,7 @@ namespace Project.Scripts.UI
 {
     public class StarterPopup : Popup
     {
-        [SerializeField] private InputField _inputField;
+        [SerializeField] private TMP_InputField _inputField;
         [SerializeField] private Button _joinButton;
         private string _inputName;
 
@@ -31,6 +32,7 @@ namespace Project.Scripts.UI
         private void OnJoinButtonClick()
         {
             MultiplayerManager.Instance.Join(_inputName);
+            Close(delayClose: 0.1f);
         }
     }
 }

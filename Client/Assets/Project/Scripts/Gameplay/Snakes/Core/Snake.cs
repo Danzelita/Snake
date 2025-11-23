@@ -1,3 +1,4 @@
+using System;
 using Project.Scripts.Data;
 using Project.Scripts.Gameplay.Snakes.Animation;
 using Project.Scripts.Gameplay.Snakes.Skins;
@@ -18,6 +19,7 @@ namespace Project.Scripts.Gameplay.Snakes.Core
         [SerializeField] private float _rotateSpeed = 90f;
         private SnakeTrail _trail;
         private string _sessionId;
+        public Action OnCollect;
 
         public void Init(SkinSettings skinSettings, int detailCount, string sessionId, bool isPlayer = false)
         {
@@ -66,5 +68,8 @@ namespace Project.Scripts.Gameplay.Snakes.Core
 
         private void Move() =>
             transform.position += _head.forward * Time.deltaTime * _speed;
+
+        public void Collect() => 
+            OnCollect?.Invoke();
     }
 }

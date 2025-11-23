@@ -9,6 +9,7 @@ using Project.Scripts.Gameplay.Snakes.Services;
 using Project.Scripts.Logic;
 using Project.Scripts.Multiplayer.Generated;
 using Project.Scripts.Settings;
+using Project.Scripts.UI;
 using UnityEngine;
 
 namespace Project.Scripts.Multiplayer
@@ -18,6 +19,7 @@ namespace Project.Scripts.Multiplayer
         public string SessionId => _room.SessionId;
         public SnakeService SnakeService => _snakeService;
 
+        [SerializeField] private UIRoot _uiRoot;
         [SerializeField] private CameraManager _cameraManager;
         [SerializeField] private Snake _snakePrefab;
         [SerializeField] private PlayerController _playerControllerPrefab;
@@ -34,6 +36,8 @@ namespace Project.Scripts.Multiplayer
         protected override void Awake()
         {
             base.Awake();
+            
+            _uiRoot.ShowLoadingScreen();
 
             _settingsProvider = new SettingsProvider();
             _settingsProvider.LoadGameSettings();
@@ -56,6 +60,9 @@ namespace Project.Scripts.Multiplayer
             _room = await client.JoinOrCreate<State>(GameRoomName, data);
 
             _room.OnStateChange += RoomOnStateChange;
+            
+            _uiRoot.HideLoadingScreen();
+            _uiRoot.OpenStarterPopup();
         }
 
         private void Update()
@@ -112,9 +119,16 @@ namespace Project.Scripts.Multiplayer
             _foodService.Dispose();
         }
 
-        public void Join(string inputName)
+        public void Join(string inputName) => 
+            SendToServer("join", inputName);
+
+        public void Join(string playerName, float delay) => 
+            StartCoroutine(DelayJoin(playerName, delay));
+
+        private IEnumerator DelayJoin(string playerName, float delay)
         {
-            
+            yield return new WaitForSeconds(delay);
+            Join(playerName);
         }
     }
 }

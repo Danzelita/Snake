@@ -290,7 +290,7 @@ Transform:
   - {fileID: 3291027002052748002}
   - {fileID: 9019506912400284494}
   m_Father: {fileID: 3987334473162976677}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -136.259, y: 9.466995, z: 0}
 --- !u!1 &1274276771367522295
 GameObject:
   m_ObjectHideFlags: 0
@@ -420,6 +420,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3987334473162976677}
   - component: {fileID: 2110566231282869020}
+  - component: {fileID: 5384013250280527083}
   m_Layer: 8
   m_Name: Head
   m_TagString: Untagged
@@ -468,6 +469,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &5384013250280527083
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2390148619773134070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5596004822e4a0baa09b5daad9aee0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _snake: {fileID: 6465175757266603461}
+  _animator: {fileID: 2110566231282869020}
 --- !u!1 &2517458481520855921
 GameObject:
   m_ObjectHideFlags: 0
@@ -554,7 +569,7 @@ Transform:
   - {fileID: 6792825267876418989}
   - {fileID: 5556247473138067566}
   m_Father: {fileID: 3987334473162976677}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -133.523, y: -14.126007, z: 2.352005}
 --- !u!1 &4445316012832426885
 GameObject:
   m_ObjectHideFlags: 0

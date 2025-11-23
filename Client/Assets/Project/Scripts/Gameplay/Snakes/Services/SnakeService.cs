@@ -34,7 +34,13 @@ namespace Project.Scripts.Gameplay.Snakes.Services
                     CreateEnemy(key, player);
             });
 
-            statePlayers.OnAdd += CreateEnemy;
+            statePlayers.OnAdd += (key, player) =>
+            {
+                if (key == _multiplayerManager.SessionId)
+                    CreatePlayer(key, player);
+                else
+                    CreateEnemy(key, player);
+            };
             statePlayers.OnRemove += RemoveEnemy;
         }
 
@@ -84,6 +90,8 @@ namespace Project.Scripts.Gameplay.Snakes.Services
 
         public void DestroyPlayer()
         {
+            _multiplayerManager.Join(_playerSnakeNetworkController.Player.name, delay: 2f);
+            
             _playerSnakeNetworkController?.Dispose();
             _playerController?.Destroy();
             

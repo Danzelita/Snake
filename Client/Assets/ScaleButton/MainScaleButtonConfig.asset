@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 403c148480401a5479b9d89ccd40b951, type: 3}
+  m_Name: MainScaleButtonConfig
+  m_EditorClassIdentifier: 
+  PressedScale: 0.95
+  Duration: 0.06
+  PressSound: {fileID: 8300000, guid: bcd83e0288841e04d8a169ef369b4659, type: 3}
+  ReleaseSound: {fileID: 8300000, guid: ed16b7e57d516ed4b802d1c5f96751b0, type: 3}

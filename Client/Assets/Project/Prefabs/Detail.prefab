@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 170515465414779964}
   - component: {fileID: 7905452080735475023}
   - component: {fileID: 7413138791401765935}
+  - component: {fileID: 5254087769893856741}
   m_Layer: 8
   m_Name: Detail
   m_TagString: Untagged
@@ -62,6 +63,62 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _snakeDeathParticle: {fileID: 2419459694314481125, guid: f18bc8e86746677419b9e0340a6aa844, type: 3}
+--- !u!114 &5254087769893856741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4538586945598769266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e41a800f8d4a41c0bfeb61f74c93b233, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _yScaleCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 1.3311268
+      outSlope: 1.3311268
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.3611716
+      value: 1.4807652
+      inSlope: -0.016163172
+      outSlope: -0.016163172
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.48060116
+    - serializedVersion: 3
+      time: 0.7657211
+      value: 0.9957836
+      inSlope: -1.4202335
+      outSlope: -1.4202335
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0.4161361
+      outSlope: 0.4161361
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 1
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _model: {fileID: 7804440547043367714}
+  _overDuration: 0.1
 --- !u!1 &4712638964283349762
 GameObject:
   m_ObjectHideFlags: 0

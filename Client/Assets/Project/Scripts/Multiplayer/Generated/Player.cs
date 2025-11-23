@@ -24,6 +24,9 @@ namespace Project.Scripts.Multiplayer.Generated
 
 		[Type(4, "uint8")]
 		public byte skin = default(byte);
+
+		[Type(5, "string")]
+		public string name = default(string);
 	}
 }
 

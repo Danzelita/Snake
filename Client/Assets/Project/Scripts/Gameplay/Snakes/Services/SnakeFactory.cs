@@ -51,7 +51,7 @@ namespace Project.Scripts.Gameplay.Snakes.Services
 
             SnakeNetworkController snakeNetworkController = new(newSnake, player);
             
-            _cameraManager.SetTarget(newSnake.transform, newPlayerController.CameraOffsetY);
+            _cameraManager.SetTarget(newSnake.transform, player);
             
             playerController = newPlayerController;
 

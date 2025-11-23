@@ -1,9 +1,8 @@
+using System;
 using System.Collections.Generic;
 using Project.Scripts.Data;
 using Project.Scripts.Gameplay.Snakes.Animation;
 using Project.Scripts.Gameplay.Snakes.Skins;
-using Project.Scripts.Logic;
-using Project.Scripts.Settings;
 using Project.Scripts.Settings.Skins;
 using Unity.Mathematics;
 using UnityEngine;
@@ -14,7 +13,10 @@ namespace Project.Scripts.Gameplay.Snakes.Core
     {
         [SerializeField] private GameObject _detailPrefab;
         [SerializeField] private float _detailDistance = 1f;
+        [SerializeField] private float _animatonDuration = 1f;
         
+        public Action<List<Transform>> DetailsChanged;
+
         private Transform _head;
         private readonly List<Transform> _details = new();
         private readonly List<Vector3> _positionHistory = new();
@@ -43,7 +45,7 @@ namespace Project.Scripts.Gameplay.Snakes.Core
             GetComponent<SkinDisplay>().SetSkin(_skinSettings);
             GetComponent<SnakeEffects>().Init(_skinSettings);
 
-            SetDetailCount(detailCount);
+            SetDetailCount(detailCount, isInit: true);
         }
 
         public void Destroy()
@@ -88,7 +90,7 @@ namespace Project.Scripts.Gameplay.Snakes.Core
             }
         }
 
-        public void SetDetailCount(int detailCount)
+        public void SetDetailCount(int detailCount, bool isInit = false)
         {
             if (detailCount == _details.Count - 1) return;
             
@@ -96,13 +98,13 @@ namespace Project.Scripts.Gameplay.Snakes.Core
             
             if (diff < 1)
                 for (int i = 0; i < -diff; i++)
-                    AddDetail();
+                    AddDetail(isInit);
             else
                 for (int i = 0; i < diff; i++)
                     RemoveDetail();
         }
 
-        private void AddDetail()
+        private void AddDetail(bool isInit = false)
         {
             Vector3 position = _details[^1].position;
             quaternion rotation = _details[^1].rotation;
@@ -118,7 +120,11 @@ namespace Project.Scripts.Gameplay.Snakes.Core
 
             if (_isPlayer) 
                 SetPlayerLayer(newDetail.gameObject);
+            
+            if (isInit == false) 
+                DetailsChanged?.Invoke(_details);
         }
+
 
         private void RemoveDetail()
         {

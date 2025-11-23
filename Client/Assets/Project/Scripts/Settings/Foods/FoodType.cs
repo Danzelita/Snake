@@ -6,5 +6,6 @@ namespace Project.Scripts.Settings.Foods
     {
         None,
         Apple,
+        AppleSmall,
     }
 }

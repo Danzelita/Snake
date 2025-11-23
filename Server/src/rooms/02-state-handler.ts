@@ -36,18 +36,22 @@ export class Player extends Schema {
     z = Math.floor(Math.random() * 128) - 64;
 
     @type("uint16")
-    score = 20;
+    score = 0;
 
     @type("uint8")
     details = 0;
 
     @type("uint8")
     skin = 0;
+    
+    @type("string")
+    name: string;
 
-    constructor(skinIndex: number){
+    constructor(name: string, skinIndex: number){
         super();
 
         this.skin = skinIndex;
+        this.name = name;
     }
 }
 
@@ -77,7 +81,7 @@ export class State extends Schema {
         player.details = Math.round(player.score / 10);
         
 
-        const type = "Apple";
+        const type = data.t;
         const position = new Vector2Float(
             Math.floor(Math.random() * 256) - 128, 
             Math.floor(Math.random() * 256) - 128            
@@ -85,9 +89,9 @@ export class State extends Schema {
         this.CreateFood(type, position);
     }
 
-    createPlayer(sessionId: string) {
+    createPlayer(sessionId: string, data: any) {
         const skinIndex = this.GetNextSkinIndex();
-        this.players.set(sessionId, new Player(skinIndex));
+        this.players.set(sessionId, new Player(data, skinIndex));
     }
 
     removePlayer(sessionId: string) {
@@ -152,7 +156,8 @@ export class State extends Schema {
 
 export class StateHandlerRoom extends Room<State> {
     maxClients = 50;
-    startFoodCount = 300;    
+    startAppleFoodCount = 220;
+    startAppleSmallFoodCount = 650;
 
     onCreate (options) {
         console.log("StateHandlerRoom created!", options);
@@ -161,6 +166,10 @@ export class StateHandlerRoom extends Room<State> {
         this.setState(new State());
 
         this.state.skinsLenght = options.skins;
+
+        this.onMessage("join", (client, data) => {
+            this.state.createPlayer(client.sessionId, data);
+        });
 
         this.onMessage("move", (client, data) => {
             this.state.movePlayer(client.sessionId, data);
@@ -175,15 +184,20 @@ export class StateHandlerRoom extends Room<State> {
             this.state.gameOver(data);
         });
 
-        for (let i = 0; i < this.startFoodCount; i++) {
-
+        for (let i = 0; i < this.startAppleFoodCount; i++) {
             const type = "Apple";
-
             const position = new Vector2Float(
                 Math.floor(Math.random() * 256) - 128, 
                 Math.floor(Math.random() * 256) - 128
             );
-            
+            this.state.CreateFood(type, position);
+        }
+        for (let i = 0; i < this.startAppleSmallFoodCount; i++) {
+            const type = "AppleSmall";
+            const position = new Vector2Float(
+                Math.floor(Math.random() * 256) - 128, 
+                Math.floor(Math.random() * 256) - 128
+            );
             this.state.CreateFood(type, position);
         }
     }

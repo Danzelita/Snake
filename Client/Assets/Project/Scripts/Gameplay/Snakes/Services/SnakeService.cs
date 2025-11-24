@@ -17,6 +17,13 @@ namespace Project.Scripts.Gameplay.Snakes.Services
         private SnakeNetworkController _playerSnakeNetworkController;
         private readonly Dictionary<string, SnakeNetworkController> _enemies = new();
         private PlayerController _playerController;
+        private Player _playerState;
+
+        public IReadOnlyList<Player> Snakes => _snakes;
+        public Action<Player> OnCreateSnake;
+        public Action<Player> OnRemoveSnake;
+
+        private readonly List<Player> _snakes = new();
 
         public SnakeService(MultiplayerManager multiplayerManager, SnakeFactory snakeFactory)
         {
@@ -58,6 +65,10 @@ namespace Project.Scripts.Gameplay.Snakes.Services
                 out PlayerController playerController
                 );
             _playerController = playerController;
+            _playerState = player;
+
+            _snakes.Add(player);
+            OnCreateSnake?.Invoke(player);
         }
 
         private void CreateEnemy(string key, Player player)
@@ -67,14 +78,20 @@ namespace Project.Scripts.Gameplay.Snakes.Services
             
             SnakeNetworkController networkController = _snakeFactory.CreateEnemy(player, key, spawnPosition, rotation);
             _enemies.Add(key, networkController);
+            
+            _snakes.Add(player);
+            OnCreateSnake?.Invoke(player);
         }
 
-        private void RemoveEnemy(string key, Player value)
+        private void RemoveEnemy(string key, Player player)
         {
             if (_enemies.Remove(key, out SnakeNetworkController networkController) == false)
                 return;
 
             networkController.Dispose();
+
+            _snakes.Remove(player);
+            OnRemoveSnake?.Invoke(player);
         }
 
         public void Dispose()
@@ -85,6 +102,9 @@ namespace Project.Scripts.Gameplay.Snakes.Services
             _playerSnakeNetworkController?.Dispose();
             _playerController?.Destroy();
             
+            OnRemoveSnake?.Invoke(_playerState);
+            _snakes.Clear();
+            
             _enemies.Clear();
         }
 
@@ -92,11 +112,16 @@ namespace Project.Scripts.Gameplay.Snakes.Services
         {
             _multiplayerManager.Join(_playerSnakeNetworkController.Player.name, delay: 2f);
             
+            _snakes.Remove(_playerState);
+            OnRemoveSnake?.Invoke(_playerState);
+            
             _playerSnakeNetworkController?.Dispose();
             _playerController?.Destroy();
             
             _playerSnakeNetworkController = null;
             _playerController = null;
+            _playerState = null;
+
         }
 
         private Vector3 GetSnakeSpawnPosition(Player player) =>

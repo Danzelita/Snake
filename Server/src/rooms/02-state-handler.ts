@@ -29,6 +29,9 @@ export class FoodState extends Schema{
 }
 
 export class Player extends Schema {
+    @type("string")
+    sessionId;
+
     @type("number")
     x = Math.floor(Math.random() * 128) - 64;
 
@@ -91,7 +94,9 @@ export class State extends Schema {
 
     createPlayer(sessionId: string, data: any) {
         const skinIndex = this.GetNextSkinIndex();
-        this.players.set(sessionId, new Player(data, skinIndex));
+        const player = new Player(data, skinIndex);
+        player.sessionId = sessionId;
+        this.players.set(sessionId, player);
     }
 
     removePlayer(sessionId: string) {

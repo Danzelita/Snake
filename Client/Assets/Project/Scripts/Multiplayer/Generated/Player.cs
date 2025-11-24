@@ -10,22 +10,25 @@ using Colyseus.Schema;
 namespace Project.Scripts.Multiplayer.Generated
 {
 	public partial class Player : Schema {
-		[Type(0, "number")]
-		public float x = default(float);
+		[Type(0, "string")]
+		public string sessionId = default(string);
 
 		[Type(1, "number")]
+		public float x = default(float);
+
+		[Type(2, "number")]
 		public float z = default(float);
 
-		[Type(2, "uint16")]
+		[Type(3, "uint16")]
 		public ushort score = default(ushort);
 
-		[Type(3, "uint8")]
+		[Type(4, "uint8")]
 		public byte details = default(byte);
 
-		[Type(4, "uint8")]
+		[Type(5, "uint8")]
 		public byte skin = default(byte);
 
-		[Type(5, "string")]
+		[Type(6, "string")]
 		public string name = default(string);
 	}
 }

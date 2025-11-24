@@ -35,6 +35,11 @@ namespace Project.Scripts.Gameplay.Controller
                 MoveCursor();
                 _playerAim.SetTargetDirection(_cursor.position);
             }
+
+            //if (Input.GetKey(KeyCode.Space))
+            //{
+            //    
+            //}
             
             SendMove();
         }

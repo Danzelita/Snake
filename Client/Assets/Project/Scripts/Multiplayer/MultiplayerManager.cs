@@ -36,9 +36,9 @@ namespace Project.Scripts.Multiplayer
         private SnakeService _snakeService;
         private FoodService _foodService;
         private LeaderBoardService _leaderBoardService;
+
         private float _lastPingSendTime;
-
-
+        
         protected override void Awake()
         {
             base.Awake();
@@ -104,6 +104,7 @@ namespace Project.Scripts.Multiplayer
 
             _leaderBoardService = new LeaderBoardService();
             _leaderBoardService.Init(state.players);
+            
             
             _room.OnMessage<string>("pong", (data) =>
             {

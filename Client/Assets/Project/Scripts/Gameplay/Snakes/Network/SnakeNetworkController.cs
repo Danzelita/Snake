@@ -10,7 +10,7 @@ namespace Project.Scripts.Gameplay.Snakes.Network
     public class SnakeNetworkController : IDisposable
     {
         public Player Player => _player;
-        
+
         private readonly Player _player;
         private readonly Snake _snake;
 
@@ -18,7 +18,7 @@ namespace Project.Scripts.Gameplay.Snakes.Network
         {
             _snake = snake;
             _player = player;
-            
+
             _player.OnChange += OnChange;
         }
 
@@ -40,20 +40,22 @@ namespace Project.Scripts.Gameplay.Snakes.Network
                         _snake.SetDetailCount((byte)change.Value);
                         break;
                     case nameof(Player.score):
-                        _snake.Collect();
+                        if ((ushort)change.Value > (ushort)change.PreviousValue) 
+                            _snake.Collect();
                         break;
                     default:
                         Debug.Log("Unknown field: " + change.Field);
                         break;
                 }
             }
+
             _snake.SetRotation(position);
         }
 
         public void Dispose()
         {
             _player.OnChange -= OnChange;
-            
+
             _snake.Destroy();
         }
     }

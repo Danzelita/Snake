@@ -48,7 +48,6 @@ namespace Project.Scripts.Gameplay.Snakes.Network
                         break;
                 }
             }
-
             _snake.SetRotation(position);
         }
 
